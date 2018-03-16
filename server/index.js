@@ -1,13 +1,51 @@
 import Koa from 'koa';
 import Router from 'koa-router';
+import Url from 'url';
+import Wealthsimple from '@wealthsimple/wealthsimple';
 
 const app = new Koa();
 const router = new Router();
 
-router.get('/auth-redirect', async function(ctx) {
-  console.log('here!', ctx.req);
-  //get the code
+const wealthsimpleConfig = {
+  env: 'sandbox',
+  clientId: 'daa4bed9fce307551d2792cd86be6fadc82a814c4889aaa0c0c88ea972a74919',
+  clientSecret: 'b865d3aa87525a430159c1dbdd71863bc67d95bcbc83c470c7c81573a5365cf8'
+};
 
+// TODO - get an existing `auth` session
+if (false) {
+  wealthsimpleConfig.auth = '';
+}
+
+const wealthsimple = new Wealthsimple(wealthsimpleConfig);
+
+wealthsimple.get('/healthcheck')
+  .then(data => console.log('healthcheck good', data))
+  .catch(error => console.error('healthcheck bad', error));
+
+router.get('/auth-redirect', async function(ctx) {
+  console.log('here');
+  const url = Url.parse(ctx.req.url, true);
+  const code = url.query.code;
+
+  //TODO - handle requests with `error` query parameter
+
+  //make the auth request
+  console.log('got the code', code);
+  const authPromise = wealthsimple.authenticate({
+    grantType: 'authorization_code',
+    redirect_uri: 'http://localhost:3000/auth-redirect',
+    state: '123',
+    scope: 'read',
+    code: code
+  });
+
+  authPromise
+    .then((a) => {
+      console.log('auth details', a);
+      //TODO - these details should be persisted after each request...?
+    })
+    .catch(error => console.error(error));
 });
 
 app.use(router.routes());
