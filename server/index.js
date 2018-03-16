@@ -2,6 +2,7 @@ import Koa from 'koa';
 import Router from 'koa-router';
 import Url from 'url';
 import Wealthsimple from '@wealthsimple/wealthsimple';
+import * as AuthUtils from './auth';
 
 const app = new Koa();
 const router = new Router();
@@ -12,9 +13,10 @@ const wealthsimpleConfig = {
   clientSecret: 'b865d3aa87525a430159c1dbdd71863bc67d95bcbc83c470c7c81573a5365cf8'
 };
 
-// TODO - get an existing `auth` session
-if (false) {
-  wealthsimpleConfig.auth = '';
+const auth = AuthUtils.get_auth();
+if (auth) {
+  wealthsimpleConfig.auth = auth;
+  //TODO - Go run some other code if we already have an auth...
 }
 
 const wealthsimple = new Wealthsimple(wealthsimpleConfig);
@@ -45,6 +47,8 @@ router.get('/auth-redirect', async function(ctx) {
 
   //TODO - these details should be persisted after each request...?
   console.log(auth);
+  AuthUtils.save_auth({ auth });
+
   if (auth) {
     ctx.redirect('http://localhost:5000/main');
   }
