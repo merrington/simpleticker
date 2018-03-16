@@ -40,12 +40,14 @@ router.get('/auth-redirect', async function(ctx) {
     code: code
   });
 
-  authPromise
-    .then((a) => {
-      console.log('auth details', a);
-      //TODO - these details should be persisted after each request...?
-    })
-    .catch(error => console.error(error));
+  const auth = await authPromise
+        .catch(error => console.error('Problem with auth', error));
+
+  //TODO - these details should be persisted after each request...?
+  console.log(auth);
+  if (auth) {
+    ctx.redirect('http://localhost:5000/main');
+  }
 });
 
 app.use(router.routes());
