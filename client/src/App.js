@@ -1,21 +1,16 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Home from './web/Home.jsx'
+import Main from './web/Main.jsx'
 
 const App = () => (
   <Router>
     <div>
 
       <Route exact path="/" component={Home} />
-      <Route path="/auth-redirect" component={About} />
+      <Route path="/main" component={Main} />
     </div>
   </Router>
-);
-
-const About = () => (
-  <div>
-    <h2>About</h2>
-  </div>
 );
 
 export default App;
