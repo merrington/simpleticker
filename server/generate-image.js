@@ -18,7 +18,7 @@ export default async function generateImage(text) {
       if (status === 1) {
         return [255, 255, 255];
       } else {
-        return [0, 0, 0];
+        return [255, 0, 0];
       }
     }));
   }
@@ -27,7 +27,7 @@ export default async function generateImage(text) {
   for (let i = 0; i < 16 - textData.height; ++i) {
     const row = [];
     for (let j = 0; j < textData[0].length; ++j) {
-      row.push([0, 0, 0]);
+      row.push([255, 0, 0]);
     }
     imageData.push(row);
   }
