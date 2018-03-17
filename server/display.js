@@ -3,7 +3,7 @@ const { spawn } = require('child_process');
 let displayProcess;
 
 export function loading() {
-  const args = ['-D70', 'ws-loading.gif', '--led-rows=16', '--led-chain=3'];
+  const args = ['-C', '-D70', 'ws-loading.gif', '--led-rows=16', '--led-chain=3'];
   console.log('Spawn loading screen');
   return spawn('./bin/led-image-viewer', args);
 }
