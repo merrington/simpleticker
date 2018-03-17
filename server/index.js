@@ -5,6 +5,7 @@ import WsAuth from './wsAuth';
 import Ws from './getData';
 import format from 'date-fns/format';
 import addDays from 'date-fns/add_days';
+import mkdirp from 'mkdirp';
 
 import generateImage from './generate-image';
 
@@ -24,6 +25,8 @@ const COLORS = {
   GREEN: 0x00FF00FF,
   WHITE: 0xFFFFFFFF,
 }
+
+mkdirp('./data');
 
 //try and load an existing auth
 let authenticated = false;

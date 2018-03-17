@@ -15,7 +15,7 @@ class Auth extends React.Component {
     }
 
     sendCodeToServer(code) {
-        axios.post(`http://localhost:5000/auth?code=${code}`)
+        axios.post(`http://10.0.42.160:5000/auth?code=${code}`)
              .then(() => {
                  this.setState({
                      loggingIn: false,
