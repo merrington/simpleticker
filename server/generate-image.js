@@ -23,6 +23,15 @@ export default async function generateImage(text) {
     }));
   }
 
+  // Pad the height of the image
+  for (let i = 0; i < 16 - textData.height; ++i) {
+    const row = [];
+    for (let j = 0; j < textData[0].length; ++j) {
+      row.push([0, 0, 0]);
+    }
+    imageData.push(row);
+  }
+
   // console.log('imageData', imageData);
 
   await makePPM(imageData);
@@ -30,7 +39,7 @@ export default async function generateImage(text) {
 
 function makePPM(data) {
   return new Promise((resolve, reject) => {
-    var wstream = fs.createWriteStream('scroll.ppm');
+    var wstream = fs.createWriteStream('scroll2.ppm');
     const dataStream = ppm.serialize(data);
     dataStream.pipe(wstream);
   });
