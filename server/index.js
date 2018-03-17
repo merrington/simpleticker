@@ -10,10 +10,11 @@ import { clearDisplay, loading, scroll } from './display';
 
 loading();
 generateImage()
+  .then(imagePath => clearDisplay());
   // .then(imagePath => scroll(imagePath));
 
-process.on('SIGINT', () => {
-  clearDisplay();
+process.on('SIGINT', async () => {
+  await clearDisplay();
 });
 
 const app = new Koa();
