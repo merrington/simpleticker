@@ -96,7 +96,7 @@ async function startPolling() {
           }
           return accountStrings;
         });
-        finalStrings = await Promise.all(finalStrings);
+        finalStrings = (await Promise.all(finalStrings)).flatten();
         generateImage(finalStrings)
           .then(imagePath => {
             clearDisplay(loadingProcess);
@@ -149,7 +149,7 @@ function getAccountName(type) {
     setTimeout(pollForAuth, 1000);
   } else {
     startPolling();
-    setInterval(startPolling, 50 * 1000);
+    //setInterval(startPolling, 50 * 1000);
   }
 })();
 
