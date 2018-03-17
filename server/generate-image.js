@@ -13,8 +13,8 @@ export default async function generateImage(text) {
     { text: '$5.67', color: 0x00FF00FF, font: '7x14' },
   ]);
 
-  return generateImageFromData(data).then(() => {
-    return new Promise((resolve) => setTimeout(resolve, 1000))
+  return generateImageFromData(data).then((image) => {
+    return image;
   })
 }
 
@@ -66,14 +66,5 @@ function generateImageFromData(imageData) {
             });
           });
     });
-  });
-}
-
-
-function makePPM(data) {
-  return new Promise((resolve, reject) => {
-    var wstream = fs.createWriteStream('scroll2.ppm');
-    const dataStream = ppm.serialize(data);
-    dataStream.pipe(wstream);
   });
 }

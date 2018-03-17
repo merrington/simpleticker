@@ -10,14 +10,12 @@ import generateImage from './generate-image';
 
 import { clearDisplay, loading, scroll } from './display';
 
-loading();
+let loadingProcess = loading();
 generateImage()
-  .then(imagePath => clearDisplay());
-  // .then(imagePath => scroll(imagePath));
-
-process.on('SIGINT', () => {
-  // await clearDisplay();
-});
+  .then(imagePath => {
+    clearDisplay(loadingProcess);
+    scroll(imagePath);
+  });
 
 const wealthsimpleConfig = {
   env: 'sandbox',
