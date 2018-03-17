@@ -46,7 +46,6 @@ function generateImageData(strings) {
   return result;
 }
 
-
 function generateImageFromData(imageData) {
   return new Promise((resolve, reject) => {
     var image = new Jimp(imageData[0].length, 16, function (err, image) {

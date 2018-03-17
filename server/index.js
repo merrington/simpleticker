@@ -10,7 +10,7 @@ import { stopDisplay, loading, scroll } from './display';
 
 loading();
 generateImage()
-  .then(imagePath => scroll(imagePath));
+  // .then(imagePath => scroll(imagePath));
 
 process.on('SIGINT', () => {
   stopDisplay();
