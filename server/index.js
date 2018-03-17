@@ -13,8 +13,8 @@ generateImage()
   .then(imagePath => clearDisplay());
   // .then(imagePath => scroll(imagePath));
 
-process.on('SIGINT', async () => {
-  await clearDisplay();
+process.on('SIGINT', () => {
+  // await clearDisplay();
 });
 
 const app = new Koa();
