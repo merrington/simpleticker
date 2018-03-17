@@ -23,3 +23,5 @@ yarn-error.log*
 # Generated images
 server/*.ppm
 server/*.png
+
+server/data/*.json
