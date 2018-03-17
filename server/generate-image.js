@@ -38,7 +38,7 @@ export default async function generateImage(text) {
 
       for (let i = 0; i < 16; ++i) {
         for (let j = 0; j < textData.width; ++j) {
-          if (textData[i] && textData[i][j]) {
+          if (textData[i - 1] && textData[i - 1][j]) {
             image.setPixelColor(0xFFFFFFFF, j, i);
           }
           // image.setAt(j, i, {
