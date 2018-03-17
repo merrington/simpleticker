@@ -7,6 +7,7 @@ import format from 'date-fns/format';
 import addDays from 'date-fns/add_days';
 import fs from 'fs';
 import mkdirp from 'mkdirp';
+import currencyFormatter from 'currency-formatter';
 
 import generateImage from './generate-image';
 
@@ -57,6 +58,10 @@ const wsAuth = new WsAuth(wealthsimple);
 const webServer = new Webserver(wealthsimple, updateAuth);
 const ws = new Ws(wsAuth);
 
+function formatCurrency(amount) {
+  return currencyFormatter.format(parseFloat(amount.amount), { code: amount.currency });
+}
+
 async function startPolling() {
   try {
     if (authenticated) {
@@ -76,7 +81,7 @@ async function startPolling() {
           const aggregated_positions = buildAccountResult(account, [...today_positions, ...yesterday_positions]);
 
           let accountStrings = [{ text: `${getAccountName(account.type)} `, font: '7x14B', color: COLORS.YELLOW }];
-          accountStrings.push({ text: `$${account.gross_position.amount} `, font: '7x14B', color: COLORS.WHITE  });
+          accountStrings.push({ text: `${formatCurrency(account.gross_position)} `, font: '7x14B', color: COLORS.WHITE  });
           for (let symbol in aggregated_positions) {
             const byHowMuch = (aggregated_positions[symbol].values[0].value.amount - aggregated_positions[symbol].values[1].value.amount).toFixed(2);
             let changeSymbol;
@@ -92,7 +97,8 @@ async function startPolling() {
               color = COLORS.YELLOW;
             }
             const isUp = byHowMuch >= 0;
-            accountStrings.push({ text: `${symbol} ${changeSymbol} $${Math.abs(byHowMuch)}  `, font: '7x14', color });
+            const byHowMuchAmount = { amount: Math.abs(byHowMuch), currency: aggregated_positions[symbol].values[0].value.currency }; 
+            accountStrings.push({ text: `${symbol} ${changeSymbol} ${formatCurrency(byHowMuchAmount)}  `, font: '7x14', color });
           }
           return accountStrings;
         });
@@ -139,6 +145,12 @@ function getAccountName(type) {
       return 'RRSP';
     case 'ca_hisa':
       return 'HISA';
+    case 'gb_jisa':
+      return 'JISA';
+    case 'gb_isa':
+     return 'ISA';
+    case 'gb_individual':
+      return 'Personal';
     default:
       return type;
   }
