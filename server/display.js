@@ -12,11 +12,15 @@ export function clearDisplay() {
   return new Promise((resolve, reject) => {
     const command = `sudo kill $(ps aux | grep 'server/bin' | awk '{print $2}')`;
     exec("ps aux | grep 'server/bin' | awk '{print $2}'", (err, stdout, stderr) => {
+      console.log('err', stdout);
       console.log('stdout', stdout);
       console.log('stderr', stderr);
     })
-    exec(command, () => {
+    exec(command, (err, stdout, stderr) => {
       console.log('process has been killed');
+      console.log('err', stdout);
+      console.log('stdout', stdout);
+      console.log('stderr', stderr);
       resolve();
     });
   });
