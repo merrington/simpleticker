@@ -23,7 +23,7 @@ function generateImageData(strings) {
   // Set the color of each pixel properly
   const words = strings.map((word) => {
     const font = new BDF();
-    font.loadSync('./fonts/7x14.bdf');
+    font.loadSync('./fonts/7x14B.bdf');
     let textData = font.writeText(`${word.text} `);
     // console.log('test', textData.width, textData.height);
 
