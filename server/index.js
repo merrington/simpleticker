@@ -6,7 +6,7 @@ import * as AuthUtils from './auth';
 
 import generateImage from './generate-image';
 
-generateImage("Hi, I'm ABE");
+generateImage("Hi, I'm ABE ");
 
 const app = new Koa();
 const router = new Router();
