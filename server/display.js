@@ -8,9 +8,11 @@ export async function loading() {
 }
 
 export function clearDisplay() {
+  console.log('about to kill a process');
   return new Promise((resolve, reject) => {
     const command = `sudo kill $(ps aux | grep 'server/bin' | awk '{print $2}')`;
     exec(command, () => {
+      console.log('process has been killed');
       resolve();
     });
   });
