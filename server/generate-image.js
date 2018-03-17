@@ -10,10 +10,12 @@ var Jimp = require("jimp");
 export default async function generateImage(text) {
   // font.loadSync('./fonts/knxt.bdf');
   const data = generateImageData([
-    { text: 'RRSP $54.23', color: 0xFFFF33FF },
-    { text: '▼ $2.24', color: 0xFF0000FF },
-    { text: 'TFSA $182.39', color: 0xFFFF33FF },
-    { text: '▲ $5.67', color: 0x00FF00FF },
+    { text: 'RRSP $54.23', color: 0xFFFF33FF, font: '7x14B' },
+    { text: '▼', color: 0xFF0000FF, font: '7x14' },
+    { text: '$2.24', color: 0xFF0000FF, font: '7x14' },
+    { text: 'TFSA $182.39', color: 0xFFFF33FF, font: '7x14B' },
+    { text: '▲', color: 0x00FF00FF, font: '7x14' },
+    { text: '$5.67', color: 0x00FF00FF, font: '7x14' },
   ]);
 
   generateImageFromData(data);
@@ -23,7 +25,7 @@ function generateImageData(strings) {
   // Set the color of each pixel properly
   const words = strings.map((word) => {
     const font = new BDF();
-    font.loadSync('./fonts/7x14B.bdf');
+    font.loadSync(`./fonts/${word.font}.bdf`);
     let textData = font.writeText(`${word.text} `);
     // console.log('test', textData.width, textData.height);
 
