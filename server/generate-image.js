@@ -1,4 +1,4 @@
-const BDF = require('./BDF.js');
+const BDF = require('./BDF');
 const ppm = require('ppm');
 const fs = require('fs');
 var toBlob = require('stream-to-blob')
