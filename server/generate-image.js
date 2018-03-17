@@ -6,9 +6,7 @@ var PNGImage = require('pngjs-image');
 const gm = require('gm');
 var Jimp = require("jimp");
 
-// The result of running this function is that an image called scroll.ppm is generated
 export default async function generateImage(text) {
-  // font.loadSync('./fonts/knxt.bdf');
   const data = generateImageData([
     { text: 'RRSP $54.23', color: 0xFFFF33FF, font: '7x14B' },
     { text: '▼', color: 0xFF0000FF, font: '7x14' },
@@ -22,12 +20,10 @@ export default async function generateImage(text) {
 }
 
 function generateImageData(strings) {
-  // Set the color of each pixel properly
   const words = strings.map((word) => {
     const font = new BDF();
     font.loadSync(`./fonts/${word.font}.bdf`);
     let textData = font.writeText(`${word.text} `);
-    // console.log('test', textData.width, textData.height);
 
     for (let i = 0; i < textData.height; ++i) {
       for (let j = 0; j < textData.width; ++j) {
@@ -40,7 +36,6 @@ function generateImageData(strings) {
     return textData;
   });
 
-  // Go through and concatenate these things
   const result = [];
   for (let i = 0; i < words[0].height; ++i) {
     let row = [];
@@ -68,7 +63,6 @@ function generateImageFromData(imageData) {
       }
 
       image.write('jimp2.png', () => {
-        // console.log('image written');
         gm('./jimp2.png')
           .write('./jimp2.ppm', function (err) {
             if (!err) console.log('done');
