@@ -1,8 +1,6 @@
 const BDF = require('./BDF');
 const ppm = require('ppm');
 const fs = require('fs');
-var toBlob = require('stream-to-blob')
-var PNGImage = require('pngjs-image');
 const gm = require('gm');
 var Jimp = require('jimp');
 
