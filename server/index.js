@@ -6,7 +6,15 @@ import * as AuthUtils from './auth';
 
 import generateImage from './generate-image';
 
-generateImage('RRSP $54.23 ▼ $2.24  TFSA $182.39 ▲ $5.67');
+import { stopDisplay, loading, scroll } from './display';
+
+loading();
+generateImage()
+  .then(imagePath => scroll(imagePath));
+
+process.on('SIGINT', () => {
+  stopDisplay();
+});
 
 const app = new Koa();
 const router = new Router();

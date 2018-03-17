@@ -4,7 +4,7 @@ const fs = require('fs');
 var toBlob = require('stream-to-blob')
 var PNGImage = require('pngjs-image');
 const gm = require('gm');
-var Jimp = require("jimp");
+var Jimp = require('jimp');
 
 export default async function generateImage(text) {
   const data = generateImageData([
@@ -16,7 +16,7 @@ export default async function generateImage(text) {
     { text: '$5.67', color: 0x00FF00FF, font: '7x14' },
   ]);
 
-  generateImageFromData(data);
+  return generateImageFromData(data);
 }
 
 function generateImageData(strings) {
@@ -52,23 +52,25 @@ function generateImageData(strings) {
 
 
 function generateImageFromData(imageData) {
-  var image = new Jimp(imageData[0].length, 16, function (err, image) {
-      for (let i = 0; i < 16; ++i) {
-        for (let j = 0; j < imageData[0].length; ++j) {
-          if (imageData[i-1] && imageData[i-1][j]) {
-            console.log('doing', imageData[i-1][j], j, i);
-            image.setPixelColor(imageData[i-1][j], j, i);
+  return new Promise((resolve, reject) => {
+    var image = new Jimp(imageData[0].length, 16, function (err, image) {
+        for (let i = 0; i < 16; ++i) {
+          for (let j = 0; j < imageData[0].length; ++j) {
+            if (imageData[i-1] && imageData[i-1][j]) {
+              console.log('doing', imageData[i-1][j], j, i);
+              image.setPixelColor(imageData[i-1][j], j, i);
+            }
           }
         }
-      }
 
-      image.write('jimp2.png', () => {
-        gm('./jimp2.png')
-          .write('./jimp2.ppm', function (err) {
-            if (!err) console.log('done');
-            if (err) console.log('error!', err);
+        image.write('scroll.png', () => {
+          gm('./scroll.png')
+            .write('./scroll.ppm', function (err) {
+              if (!err) resolve('./scroll.ppm');
+              if (err) console.log('error!', err);
+            });
           });
-        });
+    });
   });
 }
 
