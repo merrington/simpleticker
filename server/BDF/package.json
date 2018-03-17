@@ -1,0 +1,29 @@
+{
+  "name": "bdf",
+  "version": "1.0.1",
+  "description": "Simple library for reading Adobe Glyph Bitmap Distribution font files",
+  "main": "BDF.js",
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "^2.3.4"
+  },
+  "scripts": {
+    "test": "node ./node_modules/mocha/bin/mocha test.js --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/victorporof/BDF.js.git"
+  },
+  "keywords": [
+    "adobe",
+    "bdf",
+    "font",
+    "bitmap"
+  ],
+  "author": "Victor Porof <victor.porof@gmail.com>",
+  "license": "MPL 2.0",
+  "bugs": {
+    "url": "https://github.com/victorporof/BDF.js/issues"
+  },
+  "homepage": "https://github.com/victorporof/BDF.js"
+}
