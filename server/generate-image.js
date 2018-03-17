@@ -1,5 +1,4 @@
 const BDF = require('./BDF');
-const ppm = require('ppm');
 const fs = require('fs');
 const gm = require('gm');
 var Jimp = require('jimp');

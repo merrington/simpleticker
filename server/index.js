@@ -6,14 +6,14 @@ import * as AuthUtils from './auth';
 
 import generateImage from './generate-image';
 
-import { stopDisplay, loading, scroll } from './display';
+import { clearDisplay, loading, scroll } from './display';
 
 loading();
 generateImage()
-  // .then(imagePath => scroll(imagePath));
+  .then(imagePath => scroll(imagePath));
 
 process.on('SIGINT', () => {
-  stopDisplay();
+  clearDisplay();
 });
 
 const app = new Koa();
