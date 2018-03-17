@@ -13,8 +13,8 @@ export default async function generateImage(text) {
     { text: '$5.67', color: 0x00FF00FF, font: '7x14' },
   ]);
 
-  return generateImageFromData(data).then(() => {
-    return new Promise((resolve) => setTimeout(resolve, 1000))
+  return generateImageFromData(data).then((image) => {
+	  return image;
   })
 }
 
