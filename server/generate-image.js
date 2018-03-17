@@ -2,6 +2,8 @@ const BDF = require('./BDF');
 const ppm = require('ppm');
 const fs = require('fs');
 var toBlob = require('stream-to-blob')
+var PNGImage = require('pngjs-image');
+const gm = require('gm');
 
 // The result of running this function is that an image called scroll.ppm is generated
 export default async function generateImage(text) {
@@ -11,30 +13,55 @@ export default async function generateImage(text) {
 
   // console.log('textData', textData);
 
-  const imageData = [];
+  var image = PNGImage.createImage(textData.width, 16);
 
-  for (let i = 0; i < textData.height; ++i) {
-    imageData.push(textData[i].map((status) => {
-      if (status === 1) {
-        return [255, 255, 255];
-      } else {
-        return [255, 0, 0];
-      }
-    }));
-  }
-
-  // Pad the height of the image
-  for (let i = 0; i < 16 - textData.height; ++i) {
-    const row = [];
-    for (let j = 0; j < textData[0].length; ++j) {
-      row.push([255, 0, 0]);
+  // Set a pixel at (20, 30) with red, having an alpha value of 100 (half-transparent)
+  for (let i = 0; i < 16; ++i) {
+    for (let j = 0; j < textData.width; ++j) {
+      image.setAt(j, i, {
+        red: (textData[i] && textData[i][j] === 1 ? 255 : 0),
+        green: (textData[i] && textData[i][j] === 1 ? 255 : 0),
+        blue: (textData[i] && textData[i][j] === 1 ? 255 : 0),
+        alpha: 100,
+      });
     }
-    imageData.push(row);
   }
+
+  image.writeImage('scroll.png', function (err) {
+      if (err) throw err;
+      console.log('Written to the file');
+  });
+
+  // resize and remove EXIF profile data
+  gm('./scroll.ppm')
+    .write('./scrollx.ppm', function (err) {
+      if (!err) console.log('done');
+      if (err) console.log('error!', err);
+    });
+  // const imageData = [];
+
+  // for (let i = 0; i < textData.height; ++i) {
+  //   imageData.push(textData[i].map((status) => {
+  //     if (status === 1) {
+  //       return [255, 255, 255];
+  //     } else {
+  //       return [255, 0, 0];
+  //     }
+  //   }));
+  // }
+  //
+  // // Pad the height of the image
+  // for (let i = 0; i < 16 - textData.height; ++i) {
+  //   const row = [];
+  //   for (let j = 0; j < textData[0].length; ++j) {
+  //     row.push([255, 0, 0]);
+  //   }
+  //   imageData.push(row);
+  // }
 
   // console.log('imageData', imageData);
 
-  await makePPM(imageData);
+  // await makePPM(imageData);
 }
 
 function makePPM(data) {
