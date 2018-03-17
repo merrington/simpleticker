@@ -11,11 +11,6 @@ import generateImage from './generate-image';
 import { clearDisplay, loading, scroll } from './display';
 
 let loadingProcess = loading();
-generateImage()
-  .then(imagePath => {
-    clearDisplay(loadingProcess);
-    scroll(imagePath);
-  });
 
 const wealthsimpleConfig = {
   env: 'sandbox',
@@ -98,6 +93,11 @@ async function startPolling() {
           return accountStrings;
         });
         finalStrings = await Promise.all(finalStrings);
+        generateImage(finalStrings)
+          .then(imagePath => {
+            clearDisplay(loadingProcess);
+            scroll(imagePath);
+          });
       }
     }
   }
@@ -140,8 +140,15 @@ function getAccountName(type) {
   }
 }
 
-startPolling();
-setInterval(startPolling, 50 * 1000);
+(function pollForAuth() {
+  if (!fs.existsSync('./data/auth.json')) {
+    setTimeout(pollForAuth, 1000);
+  } else {
+    startPolling();
+    setInterval(startPolling, 50 * 1000);
+  }
+})();
+
 
 // user hits page -> login -> get code -> exchange for tokens
 

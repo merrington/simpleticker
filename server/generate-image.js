@@ -3,15 +3,8 @@ const fs = require('fs');
 const gm = require('gm');
 var Jimp = require('jimp');
 
-export default async function generateImage(text) {
-  const data = generateImageData([
-    { text: 'RRSP $54.23', color: 0xFFFF33FF, font: '7x14B' },
-    { text: '▼', color: 0xFF0000FF, font: '7x14' },
-    { text: '$2.24', color: 0xFF0000FF, font: '7x14' },
-    { text: 'TFSA $182.39', color: 0xFFFF33FF, font: '7x14B' },
-    { text: '▲', color: 0x00FF00FF, font: '7x14' },
-    { text: '$5.67', color: 0x00FF00FF, font: '7x14' },
-  ]);
+export default async function generateImage(strings) {
+  const data = generateImageData(strings);
 
   return generateImageFromData(data).then((image) => {
     return image;
