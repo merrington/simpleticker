@@ -43,8 +43,6 @@ function generateImageData(strings) {
     result.push(row);
   }
 
-  console.log('result', result);
-
   return result;
 }
 
@@ -55,7 +53,6 @@ function generateImageFromData(imageData) {
         for (let i = 0; i < 16; ++i) {
           for (let j = 0; j < imageData[0].length; ++j) {
             if (imageData[i-1] && imageData[i-1][j]) {
-              console.log('doing', imageData[i-1][j], j, i);
               image.setPixelColor(imageData[i-1][j], j, i);
             }
           }
