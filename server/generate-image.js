@@ -34,7 +34,7 @@ export default async function generateImage(text) {
 
   // resize and remove EXIF profile data
   gm('./scroll.ppm')
-    .write('./scrollx.ppm', function (err) {
+    .write('./scrolly.ppm', function (err) {
       if (!err) console.log('done');
       if (err) console.log('error!', err);
     });
