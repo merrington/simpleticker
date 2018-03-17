@@ -1,11 +1,9 @@
-import Koa from 'koa';
-import Router from 'koa-router';
-import Url from 'url';
-import Wealthsimple from '@wealthsimple/wealthsimple';
 import * as AuthUtils from './auth';
-
-const app = new Koa();
-const router = new Router();
+import Webserver from './web-server';
+import Wealthsimple from '@wealthsimple/wealthsimple';
+import WsAuth from './wsAuth';
+import format from 'date-fns/format';
+import addDays from 'date-fns/add_days';
 
 const wealthsimpleConfig = {
   env: 'sandbox',
@@ -13,48 +11,64 @@ const wealthsimpleConfig = {
   clientSecret: 'b865d3aa87525a430159c1dbdd71863bc67d95bcbc83c470c7c81573a5365cf8'
 };
 
+//try and load an existing auth
+let authenticated = false;
 const auth = AuthUtils.get_auth();
 if (auth) {
+  console.log('Loaded existing auth', auth);
   wealthsimpleConfig.auth = auth;
-  //TODO - Go run some other code if we already have an auth...
+  authenticated = true;
 }
 
-const wealthsimple = new Wealthsimple(wealthsimpleConfig);
+//create a new Wealthsimple
+let wealthsimple = new Wealthsimple(wealthsimpleConfig);
 
-wealthsimple.get('/healthcheck')
-  .then(data => console.log('healthcheck good', data))
-  .catch(error => console.error('healthcheck bad', error));
+async function updateAuth(auth) {
+  AuthUtils.save_auth({auth});
+  wealthsimpleConfig.auth = auth;
+  wealthsimple = new Wealthsimple(wealthsimpleConfig);
+  await wsAuth.update(wealthsimple);
 
-router.get('/auth-redirect', async function(ctx) {
-  console.log('here');
-  const url = Url.parse(ctx.req.url, true);
-  const code = url.query.code;
+  authenticated = true;
+  return authenticated;
+}
 
-  //TODO - handle requests with `error` query parameter
+const wsAuth = new WsAuth(wealthsimple);
 
-  //make the auth request
-  console.log('got the code', code);
-  const authPromise = wealthsimple.authenticate({
-    grantType: 'authorization_code',
-    redirect_uri: 'http://localhost:3000/auth-redirect',
-    state: '123',
-    scope: 'read',
-    code: code
-  });
+// create the webserver - if auth gets update (user logs in) then call the `updateAuth` function
+const webServer = new Webserver(wealthsimple, updateAuth);
 
-  const auth = await authPromise
-        .catch(error => console.error('Problem with auth', error));
+async function startPolling() {
+  try {
+    if (authenticated) {
+      const clients = await wsAuth.get(`/users`);
+      if (clients.results) {
+        clients.results.forEach(async (client) => {
+          const accounts = await wsAuth.get('/accounts');
+          if (accounts.results) {
+            accounts.results.forEach(async (account) => {
+              const today_date = new Date();
+              const today_formatted = format(today_date, 'YYYY-MM-DD');
+              const yesterday_formatted = format(addDays(today_date, -1), 'YYYY-MM-DD');
 
-  //TODO - these details should be persisted after each request...?
-  console.log(auth);
-  AuthUtils.save_auth({ auth });
-
-  if (auth) {
-    ctx.redirect('http://localhost:5000/main');
+              console.log(yesterday_formatted, today_formatted);
+              const query = `/daily_values?account_id=${account.id}&summary_date_start=${yesterday_formatted}&summary_date_end=${today_formatted}`;
+              console.log('sending query', query);
+              const daily_values = await wsAuth.get(query);
+              daily_values.results.forEach(console.log);
+              //console.log('daily values', daily_values);
+            });
+          }
+        });
+      }
+    }
   }
-});
+  catch (e) {
+    console.error('error', e)
+  }
+}
 
-app.use(router.routes());
-app.use(router.allowedMethods());
+setInterval(startPolling, 5000);
 
-app.listen(3000);
+
+// user hits page -> login -> get code -> exchange for tokens
