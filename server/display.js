@@ -10,7 +10,7 @@ export async function loading() {
 export function clearDisplay() {
   console.log('about to kill a process');
   return new Promise((resolve, reject) => {
-    const command = `sudo kill $(ps aux | grep 'server/bin' | awk '{print $2}')`;
+    const command = `sudo kill $(ps aux | grep 'server/bin' | awk '{print $2}' | awk 'FNR==2')`;
     exec("ps aux | grep 'server/bin' | awk '{print $2}'", (err, stdout, stderr) => {
       console.log('err', stdout);
       console.log('stdout', stdout);
