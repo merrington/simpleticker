@@ -4,6 +4,7 @@ const fs = require('fs');
 var toBlob = require('stream-to-blob')
 var PNGImage = require('pngjs-image');
 const gm = require('gm');
+var Jimp = require("jimp");
 
 // The result of running this function is that an image called scroll.ppm is generated
 export default async function generateImage(text) {
@@ -13,31 +14,54 @@ export default async function generateImage(text) {
 
   // console.log('textData', textData);
 
-  var image = PNGImage.createImage(textData.width, 16);
+  // var image = PNGImage.createImage(textData.width, 16);
+  //
+  // // Set a pixel at (20, 30) with red, having an alpha value of 100 (half-transparent)
+  // for (let i = 0; i < 16; ++i) {
+  //   for (let j = 0; j < textData.width; ++j) {
+  //     image.setAt(j, i, {
+  //       red: (textData[i] && textData[i][j] === 1 ? 255 : 0),
+  //       green: (textData[i] && textData[i][j] === 1 ? 255 : 0),
+  //       blue: (textData[i] && textData[i][j] === 1 ? 255 : 0),
+  //       alpha: 100,
+  //     });
+  //   }
+  // }
+  //
+  // image.writeImage('scroll.png', function (err) {
+  //     if (err) throw err;
+  //     console.log('Written to the file');
+  // });
 
-  // Set a pixel at (20, 30) with red, having an alpha value of 100 (half-transparent)
-  for (let i = 0; i < 16; ++i) {
-    for (let j = 0; j < textData.width; ++j) {
-      image.setAt(j, i, {
-        red: (textData[i] && textData[i][j] === 1 ? 255 : 0),
-        green: (textData[i] && textData[i][j] === 1 ? 255 : 0),
-        blue: (textData[i] && textData[i][j] === 1 ? 255 : 0),
-        alpha: 100,
-      });
-    }
-  }
+  var image = new Jimp(textData.width, 16, function (err, image) {
+      // this image is 256 x 256, every pixel is set to 0x00000000
 
-  image.writeImage('scroll.png', function (err) {
-      if (err) throw err;
-      console.log('Written to the file');
+      for (let i = 0; i < 16; ++i) {
+        for (let j = 0; j < textData.width; ++j) {
+          if (textData[i] && textData[i][j]) {
+            image.setPixelColor(0xFFFFFFFF, j, i);
+          }
+          // image.setAt(j, i, {
+          //   red: (textData[i] && textData[i][j] === 1 ? 255 : 0),
+          //   green: (textData[i] && textData[i][j] === 1 ? 255 : 0),
+          //   blue: (textData[i] && textData[i][j] === 1 ? 255 : 0),
+          //   alpha: 100,
+          // });
+        }
+      }
+
+      image.write('jimp.png', () => {
+        console.log('image written');
+        gm('./jimp.png')
+          .write('./jimp.ppm', function (err) {
+            if (!err) console.log('done');
+            if (err) console.log('error!', err);
+          });
+      }); // Node-style callback will be fired when write is successful
   });
 
+
   // resize and remove EXIF profile data
-  gm('./scroll.ppm')
-    .write('./scrolly.ppm', function (err) {
-      if (!err) console.log('done');
-      if (err) console.log('error!', err);
-    });
   // const imageData = [];
 
   // for (let i = 0; i < textData.height; ++i) {
