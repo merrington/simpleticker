@@ -12,7 +12,7 @@ class WsAuth {
   async get(path) {
     if (this.wealthsimple.auth) {
       try {
-        //TODO: this should probably call AuthUtils.save_auth after each (?) request
+        //TODO: this should probably call AuthUtils.save_auth after each request (?)
         return this.wealthsimple.get(path);
       }
       catch (e) {

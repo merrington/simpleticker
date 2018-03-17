@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js --exec babel-node",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon index.js --exec babel-node --ignore data/",
+    "build": "npx babel ./ --out-dir build --ignore node_modules && cp node_modules build/node_modules"
   },
   "author": "",
   "license": "MIT",
@@ -14,6 +14,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-es2015": "^6.24.1",
     "date-fns": "^1.29.0",
+    "kcors": "^2.2.1",
     "koa": "^2.5.0",
     "koa-router": "^7.4.0",
     "save": "^2.3.2"

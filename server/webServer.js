@@ -1,4 +1,5 @@
 import * as AuthUtils from './auth';
+import cors from 'kcors';
 import Koa from 'koa';
 import Router from 'koa-router';
 import Url from 'url';
@@ -21,12 +22,9 @@ class Webserver {
       .then(data => console.log('healthcheck good', data))
       .catch(error => console.error('healthcheck bad', error));
 
-    router.get('/auth-redirect', async (ctx) => {
+    router.post('/auth', async (ctx) => {
       const url = Url.parse(ctx.req.url, true);
       const code = url.query.code;
-
-      //TODO - what to do with this
-      //make the request to get the new `auth` settings
 
       console.log({code})
       const authPromise = wealthsimple.authenticate({
@@ -36,6 +34,7 @@ class Webserver {
         state: '123',
         code: code
       });
+
       console.log({authPromise})
       const auth = await authPromise.then((newAuth) => {
         console.log({newAuth});
@@ -43,14 +42,18 @@ class Webserver {
       }).catch((e) => { console.log(e) });
 
       if (auth) {
-        ctx.redirect('http://localhost:5000/main');
+        ctx.status = 200;
+      }
+      else {
+        ctx.status = 400;
       }
     });
 
+    app.use(cors());
     app.use(router.routes());
     app.use(router.allowedMethods());
 
-    app.listen(3000);
+    app.listen(5000);
   }
 };
 
