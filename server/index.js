@@ -5,6 +5,7 @@ import WsAuth from './wsAuth';
 import Ws from './getData';
 import format from 'date-fns/format';
 import addDays from 'date-fns/add_days';
+import fs from 'fs';
 import mkdirp from 'mkdirp';
 
 import generateImage from './generate-image';
