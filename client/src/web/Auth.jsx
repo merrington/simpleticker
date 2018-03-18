@@ -33,13 +33,13 @@ class Auth extends React.Component {
     render() {
         if (this.state.loggingIn) {
             return (
-                <div>Logging in...</div>
+                <h2>Logging in...</h2>
             );
         }
         return (
-            <div>
+            <h2>
                 { this.state.loggedIn ? 'Logged In!' : 'Login failed' }
-            </div>
+            </h2>
         );
     }
 }

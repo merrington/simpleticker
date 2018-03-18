@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@wealthsimple/fabric": "^2.0.1",
     "@wealthsimple/wealthsimple": "git+https://git@github.com/wealthsimple/wealthsimple.js.git",
     "axios": "^0.18.0",
     "react": "^16.2.0",
