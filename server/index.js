@@ -75,6 +75,7 @@ function formatCurrency(amount) {
 async function startPolling() {
   try {
     if (authenticated) {
+      //await ws.updateName(); // Call this if you want the name changed, update it in `getData.js`
       const client = await ws.getPeople();
       const clientName = getClientName(client);
       const clientGreeting = getClientGreeting(clientName);

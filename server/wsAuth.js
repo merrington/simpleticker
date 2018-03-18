@@ -21,6 +21,19 @@ class WsAuth {
     }
     return undefined;
   }
+
+  async patch(path, { query, body }) {
+    if (this.wealthsimple.auth) {
+      try {
+        //TODO: this should probably call AuthUtils.save_auth after each request (?)
+        return this.wealthsimple.patch(path, { query, body });
+      }
+      catch (e) {
+        console.error(e);
+      }
+    }
+    return undefined;
+  }
 }
 
 export default WsAuth;

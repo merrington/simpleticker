@@ -22,6 +22,17 @@ class Ws {
   async getPeople() {
     return (await this.wsAuth.get('/people')).results;
   }
+
+  async updateName() {
+    await this.wsAuth.patch(`/people/person-zz3c3lxc8rvfqg`, { body: {
+      preferred_first_name: 'John',
+      full_legal_name: {
+        first_name: 'John',
+        last_name: 'Doe'
+      }
+    }
+    });
+  }
 }
 
 export default Ws;
