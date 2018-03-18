@@ -25,10 +25,10 @@ class Ws {
 
   async updateName() {
     await this.wsAuth.patch(`/people/person-zz3c3lxc8rvfqg`, { body: {
-      preferred_first_name: 'John',
+      preferred_first_name: 'Mike',
       full_legal_name: {
-        first_name: 'John',
-        last_name: 'Doe'
+        first_name: 'Mike',
+        last_name: 'Errington'
       }
     }
     });

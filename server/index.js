@@ -190,7 +190,7 @@ function getClientName(client) {
 }
 
 function getClientGreeting(name) {
-  const hour = (new Date()).getHours();
+  const hour = (new Date()).getHours() - 4; // - 4 to EST
   let greeting;
   if (hour < 12)
     greeting = `Good morning`;
