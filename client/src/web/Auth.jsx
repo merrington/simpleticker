@@ -2,6 +2,9 @@ import React from 'react';
 import axios from 'axios';
 import querystring from 'querystring';
 
+const SERVER_IP = '10.0.42.160';
+//const SERVER_IP = 'localhost';
+
 class Auth extends React.Component {
     constructor(props) {
         super(props);
@@ -15,7 +18,7 @@ class Auth extends React.Component {
     }
 
     sendCodeToServer(code) {
-        axios.post(`http://10.0.42.160:5000/auth?code=${code}`)
+        axios.post(`http://${SERVER_IP}:5000/auth?code=${code}`)
              .then(() => {
                  this.setState({
                      loggingIn: false,
