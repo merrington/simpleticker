@@ -22,3 +22,7 @@ export function get_auth({ file = DEFAULT_AUTH_PATH } = {}) {
     return undefined;
   }
 }
+
+export function clear_auth({ file = DEFAULT_AUTH_PATH } = {}) {
+  fs.unlinkSync(file);
+}

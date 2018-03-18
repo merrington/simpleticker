@@ -8,9 +8,10 @@ const app = new Koa();
 const router = new Router();
 
 class Webserver {
-  constructor(wealthsimple, updateAuth) {
+  constructor(wealthsimple, updateAuth, clearAuth) {
     this.wealthsimple = wealthsimple;
     this.updateAuth = updateAuth;
+    this.clearAuth = clearAuth;
 
     this.startServer();
   }
@@ -47,6 +48,11 @@ class Webserver {
       else {
         ctx.status = 400;
       }
+    });
+
+    router.delete('/clear-auth', async (ctx) => {
+      this.clearAuth();
+      ctx.status = 200;
     });
 
     app.use(cors());

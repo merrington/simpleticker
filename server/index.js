@@ -23,10 +23,11 @@ const wealthsimpleConfig = {
 
 const COLORS = {
   YELLOW: 0xFFFF33FF,
-  RED: 0xFF0000FF,
-  GREEN: 0x00FF00FF,
-  WHITE: 0xFFFFFFFF,
-}
+  RED:    0xFF0000FF,
+  GREEN:  0x00FF00FF,
+  WHITE:  0xFFFFFFFF,
+  BLUE:   0x0000FFFF
+};
 
 mkdirp('./data');
 
@@ -52,10 +53,19 @@ async function updateAuth(auth) {
   return authenticated;
 }
 
+async function clearAuth() {
+  AuthUtils.clear_auth();
+  wealthsimple = new Wealthsimple(wealthsimpleConfig);
+  await wsAuth.update(wealthsimple);
+
+  authenticated = false;
+  return authenticated;
+}
+
 const wsAuth = new WsAuth(wealthsimple);
 
 // create the webserver - if auth gets update (user logs in) then call the `updateAuth` function
-const webServer = new Webserver(wealthsimple, updateAuth);
+const webServer = new Webserver(wealthsimple, updateAuth, clearAuth);
 const ws = new Ws(wsAuth);
 
 function formatCurrency(amount) {
@@ -65,7 +75,11 @@ function formatCurrency(amount) {
 async function startPolling() {
   try {
     if (authenticated) {
+      const client = await ws.getPeople();
+      const clientName = getClientName(client);
+      const clientGreeting = getClientGreeting(clientName);
       const accounts = await ws.getAccounts();
+
       if (accounts) {
         let finalStrings = accounts.map(async (account) => {
           const today = new Date();
@@ -80,7 +94,7 @@ async function startPolling() {
           //build the strings
           const aggregated_positions = buildAccountResult(account, [...today_positions, ...yesterday_positions]);
 
-          let accountStrings = [{ text: `${getAccountName(account.type)} `, font: '7x14B', color: COLORS.YELLOW }];
+          let accountStrings = [{ text: `${getAccountName(account)} `, font: '7x14B', color: COLORS.YELLOW }];
           accountStrings.push({ text: `${formatCurrency(account.gross_position)} `, font: '7x14B', color: COLORS.WHITE  });
           for (let symbol in aggregated_positions) {
             const byHowMuch = (aggregated_positions[symbol].values[0].value.amount - aggregated_positions[symbol].values[1].value.amount).toFixed(2);
@@ -97,13 +111,19 @@ async function startPolling() {
               color = COLORS.YELLOW;
             }
             const isUp = byHowMuch >= 0;
-            const byHowMuchAmount = { amount: Math.abs(byHowMuch), currency: aggregated_positions[symbol].values[0].value.currency }; 
+            const byHowMuchAmount = { amount: Math.abs(byHowMuch), currency: aggregated_positions[symbol].values[0].value.currency };
             accountStrings.push({ text: `${symbol} ${changeSymbol} ${formatCurrency(byHowMuchAmount)}  `, font: '7x14', color });
           }
           return accountStrings;
         });
         finalStrings = (await Promise.all(finalStrings)).flatten();
-        finalStrings.unshift({ text: '           ', font: '7x14', color: COLORS.WHITE });
+        finalStrings.unshift([
+          { text: '           ', font: '7x14', color: COLORS.WHITE },
+          { text: clientGreeting, font: '7x14B', color: COLORS.BLUE }
+        ]);
+        finalStrings = finalStrings.flatten();
+        console.log(finalStrings);
+
         generateImage(finalStrings)
           .then(imagePath => {
             clearDisplay(loadingProcess);
@@ -138,8 +158,12 @@ function getLastBusinessDay(now, daysOffset = 0) {
   }
 }
 
-function getAccountName(type) {
-  switch(type) {
+function getAccountName(account) {
+  if (account.nickname && account.nickname.length) {
+    return account.nickname;
+  }
+
+  switch(account.type) {
     case 'tfsa':
       return 'TFSA';
     case 'rrsp':
@@ -153,8 +177,28 @@ function getAccountName(type) {
     case 'gb_individual':
       return 'Personal';
     default:
-      return type;
+      return account.type;
   }
+}
+
+function getClientName(client) {
+  client = client[0];
+  const first = client.preferred_first_name;
+  const last = client.full_legal_name.last_name;
+  return `${first} ${last}`;
+}
+
+function getClientGreeting(name) {
+  const hour = (new Date()).getHours();
+  let greeting;
+  if (hour < 12)
+    greeting = `Good morning`;
+  else if (hour < 17)
+    greeting = `Good afternoon`;
+  else
+    greeting = `Good evening`;
+
+  return `${greeting}, ${name}`;
 }
 
 (function pollForAuth() {

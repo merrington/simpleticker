@@ -18,6 +18,10 @@ class Ws {
   async getPositions(account, date) {
     return (await this.wsAuth.get(`/positions?account_id=${account.id}&date=${date}`)).results;
   }
+
+  async getPeople() {
+    return (await this.wsAuth.get('/people')).results;
+  }
 }
 
 export default Ws;
