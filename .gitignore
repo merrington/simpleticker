@@ -21,5 +21,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # Generated images
-server/*.ppm
-server/*.png
+server/scroll.ppm
+server/scroll.png
+
+server/data/*.json

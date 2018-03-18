@@ -103,6 +103,7 @@ async function startPolling() {
           return accountStrings;
         });
         finalStrings = (await Promise.all(finalStrings)).flatten();
+        finalStrings.unshift({ text: '           ', font: '7x14', color: COLORS.WHITE });
         generateImage(finalStrings)
           .then(imagePath => {
             clearDisplay(loadingProcess);
